@@ -27,9 +27,9 @@
 <header>
   <a class="brand" href="{base}/">{GAME.title}</a>
   <nav>
-    <a href="{base}/archive">Архив</a>
-    <a href="{base}/stats">Статистика</a>
-    <button class="themebtn" onclick={toggle} aria-label="Сменить тему">
+    <a href="{base}/archive">Archive</a>
+    <a href="{base}/stats">Stats</a>
+    <button class="themebtn" onclick={toggle} aria-label="Toggle theme">
       {theme === 'light' ? '🌙' : '☀️'}
     </button>
   </nav>

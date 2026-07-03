@@ -20,24 +20,24 @@
   const pct = (x) => Math.round((x || 0) * 100);
 </script>
 
-<h1>Статистика</h1>
+<h1>Stats</h1>
 
 {#if !s || s.started === 0}
-  <p class="muted">Сыграй хотя бы один день, и здесь появится статистика.</p>
+  <p class="muted">Play at least one day and your stats will show up here.</p>
 {:else}
   <div class="grid">
-    <div class="stat"><span class="num">{s.finished}</span><span class="lbl">дней пройдено</span></div>
-    <div class="stat"><span class="num">{pct(s.finishRate)}%</span><span class="lbl">доходимость</span></div>
-    <div class="stat"><span class="num">🔥 {s.currentStreak}</span><span class="lbl">серия</span></div>
-    <div class="stat"><span class="num">{fmtTime(s.avgMs)}</span><span class="lbl">среднее время</span></div>
-    <div class="stat"><span class="num">{fmtTime(s.bestMs)}</span><span class="lbl">лучшее время</span></div>
+    <div class="stat"><span class="num">{s.finished}</span><span class="lbl">days solved</span></div>
+    <div class="stat"><span class="num">{pct(s.finishRate)}%</span><span class="lbl">completion</span></div>
+    <div class="stat"><span class="num">🔥 {s.currentStreak}</span><span class="lbl">streak</span></div>
+    <div class="stat"><span class="num">{fmtTime(s.avgMs)}</span><span class="lbl">avg time</span></div>
+    <div class="stat"><span class="num">{fmtTime(s.bestMs)}</span><span class="lbl">best time</span></div>
     {#if s.scored}
-      <div class="stat"><span class="num">{s.avgScore?.toFixed(1)}</span><span class="lbl">средний счёт</span></div>
-      <div class="stat"><span class="num">{s.bestScore}</span><span class="lbl">лучший счёт</span></div>
+      <div class="stat"><span class="num">{s.avgScore?.toFixed(1)}</span><span class="lbl">avg score</span></div>
+      <div class="stat"><span class="num">{s.bestScore}</span><span class="lbl">best score</span></div>
     {/if}
   </div>
 
-  <h2>По дням</h2>
+  <h2>By day</h2>
   <ul class="days">
     {#each [...s.days].reverse() as d}
       <li>
@@ -45,7 +45,7 @@
           <span class="idx">#{d.idx}</span>
           <span class="time">{fmtTime(d.ms)}</span>
           {#if global?.[d.idx]}
-            <span class="g">все: {global[d.idx].started} начали · {global[d.idx].finished} закончили</span>
+            <span class="g">all: {global[d.idx].started} started · {global[d.idx].finished} finished</span>
           {/if}
         </a>
       </li>
@@ -53,7 +53,7 @@
   </ul>
 
   {#if !statsEnabled()}
-    <p class="hint">Глобальная статистика выключена. Разверни Worker (см. <code>backend/README.md</code>) и впиши URL в <code>config.js</code>.</p>
+    <p class="hint">Global stats are off. Deploy the Worker (see <code>backend/README.md</code>) and paste its URL into <code>config.js</code>.</p>
   {/if}
 {/if}
 

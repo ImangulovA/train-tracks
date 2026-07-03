@@ -464,8 +464,8 @@
 
 <div class="tt" bind:this={wrap}>
   <p class="hint">
-    Соедини входы одной ж/д линией. Числа = сколько клеток пути в столбце/строке.
-    Линия не ветвится и не пересекается сама с собой.
+    Connect the two entrances with a single rail line. The numbers count how many
+    track pieces are in each column and row. The line can't fork or cross itself.
   </p>
 
   <canvas
@@ -481,17 +481,17 @@
   ></canvas>
 
   <div class="tools">
-    <div class="seg" role="group" aria-label="Инструмент">
-      <button class:active={mode === 'rail'} onclick={() => (mode = 'rail')}>🚆 Рельсы</button>
-      <button class:active={mode === 'empty'} onclick={() => (mode = 'empty')}>✖ Пусто</button>
+    <div class="seg" role="group" aria-label="Tool">
+      <button class:active={mode === 'rail'} onclick={() => (mode = 'rail')}>🚆 Rails</button>
+      <button class:active={mode === 'empty'} onclick={() => (mode = 'empty')}>✖ Empty</button>
     </div>
-    <button class="ghost" onclick={undo} disabled={!canUndo}>↶ Отмена</button>
-    <button class="ghost" onclick={clearAll}>Сброс</button>
+    <button class="ghost" onclick={undo} disabled={!canUndo}>↶ Undo</button>
+    <button class="ghost" onclick={clearAll}>Reset</button>
   </div>
 
   <p class="legend">
-    Десктоп: <b>ЛКМ + протяжка</b> — рельсы, <b>ПКМ</b> — пусто.
-    Моб.: <b>протяжка</b> в выбранном режиме, <b>долгий тап</b> — пусто.
+    Desktop: <b>left-drag</b> to lay rails, <b>right-click</b> to mark empty.
+    Mobile: <b>drag</b> in the selected mode, <b>long-press</b> to mark empty.
   </p>
 </div>
 

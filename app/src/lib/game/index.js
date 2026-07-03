@@ -22,7 +22,7 @@ export const GAME = {
   id: 'train-tracks',
 
   title: 'Daily Train Tracks',
-  tagline: 'Проведи ж/д путь от входа до выхода. Одна головоломка в день.',
+  tagline: 'Draw one rail line from entrance to exit. A fresh puzzle every day.',
 
   // Day 0 = 3 July 2026 (monthIndex 6). Day N = this + N calendar days.
   anchorDate: [2026, 6, 3],

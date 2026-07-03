@@ -118,14 +118,14 @@
     const times = (dayAgg()?.times || []).slice();
     const i = times.indexOf(my);
     if (i >= 0) times.splice(i, 1);
-    if (times.length === 0) return { label: '🥇 Первым решил!', pctFaster: null };
+    if (times.length === 0) return { label: '🥇 First to solve!', pctFaster: null };
     const slower = times.filter((t) => t > my).length;
     const pctFaster = Math.round((100 * slower) / times.length);
     let label;
-    if (pctFaster >= 90) label = '🥇 Топ 10%';
-    else if (pctFaster >= 75) label = '🥈 Топ 25%';
-    else if (pctFaster >= 50) label = '🥉 Быстрее половины';
-    else label = '🚂 Финиш';
+    if (pctFaster >= 90) label = '🥇 Top 10%';
+    else if (pctFaster >= 75) label = '🥈 Top 25%';
+    else if (pctFaster >= 50) label = '🥉 Faster than half';
+    else label = '🚂 Finished';
     return { label, pctFaster };
   }
 
@@ -148,10 +148,10 @@
     }
     try {
       await navigator.clipboard.writeText(text);
-      shared = 'Скопировано!';
+      shared = 'Copied!';
       setTimeout(() => (shared = ''), 2000);
     } catch (e) {
-      shared = 'Не вышло скопировать';
+      shared = 'Copy failed';
     }
   }
 
@@ -159,16 +159,16 @@
 </script>
 
 {#if view === 'loading'}
-  <p class="status">Загрузка…</p>
+  <p class="status">Loading…</p>
 {:else if view === 'empty'}
   <div class="card">
-    <h1>Нет данных на этот день</h1>
-    <p class="muted">Этого дня ещё нет. <a href="{base}/archive">Открыть архив →</a></p>
+    <h1>No puzzle for this day</h1>
+    <p class="muted">This day isn’t available yet. <a href="{base}/archive">Open the archive →</a></p>
   </div>
 {:else}
   <div class="daybar">
     <span class="daychip" class:future={isFuture}>
-      #{dayIdx} · {fmtDate(dayIdx)}{#if isFuture} · превью{/if}
+      #{dayIdx} · {fmtDate(dayIdx, 'en-US')}{#if isFuture} · preview{/if}
     </span>
   </div>
 
@@ -176,8 +176,8 @@
     <div class="card intro">
       <h1>{GAME.title}</h1>
       <p class="muted">{GAME.tagline}</p>
-      {#if isFuture}<p class="future-note">🔓 Режим автора: будущий день</p>{/if}
-      <button class="primary" onclick={beginPlay}>Играть</button>
+      {#if isFuture}<p class="future-note">🔓 Author mode: future day</p>{/if}
+      <button class="primary" onclick={beginPlay}>Play</button>
     </div>
   {/if}
 
@@ -196,10 +196,10 @@
 
   {#if view === 'end'}
     <div class="card end">
-      <h1>{record.result?.won ? '🚂 Готово!' : 'Конец'}</h1>
+      <h1>{record.result?.won ? '🚂 Solved!' : 'Game over'}</h1>
       <div class="bigstats">
-        <div><span class="num">{record.result?.size ?? '—'}</span><span class="lbl">сетка</span></div>
-        <div><span class="num">{fmtTime(record.elapsedMs)}</span><span class="lbl">время</span></div>
+        <div><span class="num">{record.result?.size ?? '—'}</span><span class="lbl">grid</span></div>
+        <div><span class="num">{fmtTime(record.elapsedMs)}</span><span class="lbl">time</span></div>
       </div>
 
       {#if record.result?.won}
@@ -208,7 +208,7 @@
           <div class="tier">
             <span class="tier-badge">{t.label}</span>
             {#if t.pctFaster != null}
-              <span class="tier-sub">Быстрее {t.pctFaster}% игроков</span>
+              <span class="tier-sub">Faster than {t.pctFaster}% of players</span>
             {/if}
           </div>
         {/if}
@@ -216,21 +216,21 @@
 
       {#if dayAgg()}
         <div class="global">
-          <h2>Все игроки</h2>
+          <h2>All players</h2>
           <div class="grow">
-            <div><span class="num">{dayAgg().started}</span><span class="lbl">начали</span></div>
-            <div><span class="num">{dayAgg().finished}</span><span class="lbl">закончили</span></div>
+            <div><span class="num">{dayAgg().started}</span><span class="lbl">started</span></div>
+            <div><span class="num">{dayAgg().finished}</span><span class="lbl">finished</span></div>
           </div>
         </div>
       {/if}
 
       <div class="actions">
-        <button class="primary" onclick={share}>Поделиться</button>
-        <a class="ghost" href="{base}/stats">Вся статистика →</a>
+        <button class="primary" onclick={share}>Share</button>
+        <a class="ghost" href="{base}/stats">All stats →</a>
       </div>
       {#if shared}<p class="copied">{shared}</p>{/if}
 
-      <p class="nextgame">Новая игра через {untilMidnight}</p>
+      <p class="nextgame">Next puzzle in {untilMidnight}</p>
     </div>
   {/if}
 {/if}

@@ -10,7 +10,7 @@
   import { isUnlocked } from '$lib/platform/unlock.js';
   import { fmtTime } from '$lib/platform/timer.js';
 
-  const WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  const WD = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   let months = $state([]);
   let locked = $state(false); // are there future days gated behind unlock?
 
@@ -60,7 +60,7 @@
       const weeks = [];
       for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
       out.push({
-        label: firstOfMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
+        label: firstOfMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
         weeks
       });
       m++;
@@ -73,15 +73,15 @@
   });
 </script>
 
-<h1>Архив</h1>
+<h1>Archive</h1>
 
 {#if months.length === 0}
-  <p class="muted">Пока нет доступных дней.</p>
+  <p class="muted">No days available yet.</p>
 {:else}
   {#if locked}
     <p class="hint">
-      Будущие дни открываются в свой день. Для автора: открой ссылку с
-      <code>?unlock=…&amp;day=N</code> один раз — доступ сохранится.
+      Future days open on their date. Author: open a link with
+      <code>?unlock=…&amp;day=N</code> once — access is remembered.
     </p>
   {/if}
 
@@ -102,7 +102,7 @@
                 class:today={cell.isToday}
                 class:future={cell.future}
                 href="{base}/?day={cell.idx}"
-                title={cell.status === 'done' ? `Пройдено · ${fmtTime(cell.ms)}` : 'Играть'}
+                title={cell.status === 'done' ? `Solved · ${fmtTime(cell.ms)}` : 'Play'}
               >
                 <span class="dom">{cell.dom}</span>
                 <span class="mark">
@@ -110,7 +110,7 @@
                 </span>
               </a>
             {:else}
-              <div class="cell day locked" title="Откроется в свой день">
+              <div class="cell day locked" title="Opens on its date">
                 <span class="dom">{cell.dom}</span>
                 <span class="mark">🔒</span>
               </div>
