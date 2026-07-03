@@ -40,7 +40,18 @@
 </main>
 
 <footer>
-  <span>Built from <strong>daily_github_game</strong></span>
+  <span>Built from
+    <a
+      class="foot-brand"
+      href="https://github.com/ImangulovA/daily_github_game"
+      target="_blank"
+      rel="noopener">daily_github_game</a>
+  </span>
+  <span class="foot-links">
+    <a href="https://www.linkedin.com/in/imangulov" target="_blank" rel="noopener">LI</a>
+    <span class="dot">·</span>
+    <a href="https://imangulova.github.io/" target="_blank" rel="noopener">GH</a>
+  </span>
 </footer>
 
 <style>
@@ -141,5 +152,26 @@
     color: var(--muted);
     font-size: 13px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+  footer a {
+    color: var(--muted);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  footer a:hover {
+    color: var(--ink);
+  }
+  .foot-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .foot-links .dot {
+    opacity: 0.6;
   }
 </style>
