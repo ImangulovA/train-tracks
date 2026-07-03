@@ -107,6 +107,28 @@
     return agg?.agg?.[dayIdx] || null;
   }
 
+  // Percentile tier from the cross-player time distribution: how the player's
+  // time compares to everyone else who solved this day. `times` may or may not
+  // already include the player's own time (finish beacon race), so we drop one
+  // matching entry before ranking.
+  function speedTier() {
+    if (!record.result?.won) return null;
+    const my = record.result?.ms;
+    if (my == null) return null;
+    const times = (dayAgg()?.times || []).slice();
+    const i = times.indexOf(my);
+    if (i >= 0) times.splice(i, 1);
+    if (times.length === 0) return { label: '🥇 Первым решил!', pctFaster: null };
+    const slower = times.filter((t) => t > my).length;
+    const pctFaster = Math.round((100 * slower) / times.length);
+    let label;
+    if (pctFaster >= 90) label = '🥇 Топ 10%';
+    else if (pctFaster >= 75) label = '🥈 Топ 25%';
+    else if (pctFaster >= 50) label = '🥉 Быстрее половины';
+    else label = '🚂 Финиш';
+    return { label, pctFaster };
+  }
+
   function shareText() {
     const url = `${location.origin}${base}/`;
     return GAME.shareLine(record.result, dayIdx, url);
@@ -179,6 +201,18 @@
         <div><span class="num">{record.result?.size ?? '—'}</span><span class="lbl">сетка</span></div>
         <div><span class="num">{fmtTime(record.elapsedMs)}</span><span class="lbl">время</span></div>
       </div>
+
+      {#if record.result?.won}
+        {@const t = speedTier()}
+        {#if t}
+          <div class="tier">
+            <span class="tier-badge">{t.label}</span>
+            {#if t.pctFaster != null}
+              <span class="tier-sub">Быстрее {t.pctFaster}% игроков</span>
+            {/if}
+          </div>
+        {/if}
+      {/if}
 
       {#if dayAgg()}
         <div class="global">
@@ -299,6 +333,22 @@
   .lbl {
     color: var(--muted);
     font-size: 12px;
+  }
+  .tier {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin: 6px 0 4px;
+  }
+  .tier-badge {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .tier-sub {
+    color: var(--muted);
+    font-size: 13px;
   }
   .global {
     border-top: var(--border);

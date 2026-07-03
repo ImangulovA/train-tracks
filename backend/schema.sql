@@ -23,3 +23,14 @@ CREATE TABLE IF NOT EXISTS day_stats (
   scored_count  INTEGER NOT NULL DEFAULT 0,  -- # finishes that carried a score
   PRIMARY KEY (game, day)
 );
+
+-- Individual finish times: one row per (game, day, client). Powers the time
+-- distribution used for percentile tiers ("faster than N% of solvers").
+CREATE TABLE IF NOT EXISTS finish_times (
+  game      TEXT NOT NULL,
+  day       INTEGER NOT NULL,
+  client_id TEXT NOT NULL,
+  ms        INTEGER NOT NULL,
+  PRIMARY KEY (game, day, client_id)
+);
+CREATE INDEX IF NOT EXISTS idx_finish_times_game_day ON finish_times (game, day);

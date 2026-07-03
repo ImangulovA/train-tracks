@@ -29,7 +29,6 @@
     <div class="stat"><span class="num">{s.finished}</span><span class="lbl">дней пройдено</span></div>
     <div class="stat"><span class="num">{pct(s.finishRate)}%</span><span class="lbl">доходимость</span></div>
     <div class="stat"><span class="num">🔥 {s.currentStreak}</span><span class="lbl">серия</span></div>
-    <div class="stat"><span class="num">{s.maxStreak}</span><span class="lbl">рекорд серии</span></div>
     <div class="stat"><span class="num">{fmtTime(s.avgMs)}</span><span class="lbl">среднее время</span></div>
     <div class="stat"><span class="num">{fmtTime(s.bestMs)}</span><span class="lbl">лучшее время</span></div>
     {#if s.scored}

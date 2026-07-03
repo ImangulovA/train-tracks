@@ -122,6 +122,14 @@ async function handleEvent(request, env, cors, kind) {
     )
       .bind(ms, score, hasScore ? 1 : 0, game, day)
       .run();
+
+    // Record this solver's individual time (first solve counts) so aggregates
+    // can return the time distribution for percentile tiers.
+    await env.DB.prepare(
+      'INSERT OR IGNORE INTO finish_times (game, day, client_id, ms) VALUES (?, ?, ?, ?)'
+    )
+      .bind(game, day, clientId, ms)
+      .run();
   }
 
   return json({ ok: true }, 200, cors);
@@ -161,8 +169,34 @@ async function handleAgg(url, env, cors) {
       finished: r.finished,
       finishRate: r.started ? r.finished / r.started : 0,
       avgMs: r.finished ? Math.round(r.total_ms / r.finished) : 0,
-      avgScore: r.scored_count ? r.total_score / r.scored_count : null
+      avgScore: r.scored_count ? r.total_score / r.scored_count : null,
+      times: []
     };
   }
+
+  // Attach the sorted per-day time distribution so clients can compute a
+  // percentile tier ("faster than N% of solvers").
+  let timeRows;
+  if (days.length) {
+    const ph = days.map(() => '?').join(',');
+    timeRows = await env.DB.prepare(
+      `SELECT day, ms FROM finish_times WHERE game = ? AND day IN (${ph}) ORDER BY ms ASC`
+    )
+      .bind(game, ...days)
+      .all();
+  } else {
+    timeRows = await env.DB.prepare(
+      'SELECT day, ms FROM finish_times WHERE game = ? ORDER BY ms ASC'
+    )
+      .bind(game)
+      .all();
+  }
+  for (const r of timeRows.results || []) {
+    if (!agg[r.day]) {
+      agg[r.day] = { started: 0, finished: 0, finishRate: 0, avgMs: 0, avgScore: null, times: [] };
+    }
+    agg[r.day].times.push(r.ms);
+  }
+
   return json({ ok: true, agg }, 200, cors);
 }
