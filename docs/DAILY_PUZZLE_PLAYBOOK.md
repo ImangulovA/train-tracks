@@ -275,6 +275,19 @@ ahead. Author-mode link to play unreleased days: `?unlock=<UNLOCK_PASSWORD>&day=
   `deploy.yml` derives `BASE_PATH=/<repo-name>` automatically. Live at
   `https://imangulova.github.io/<repo>/`. (The unauthenticated `/pages` REST API
   can return 404 even when the site is live — check the actual URL for 200.)
+- **Concurrency: `cancel-in-progress: false`** in the workflow. With `true`,
+  pushing several commits in quick succession cancels the in-flight Pages
+  deployment mid-way and the next one fails with **"Deployment failed, try again
+  later."** Let runs queue instead (matches GitHub's official Pages workflow). If
+  a deploy is left in that state, just **re-run the failed job** — no code change
+  needed.
+- **Action versions**: use `actions/checkout@v5` and `actions/setup-node@v5`
+  (Node 24) to avoid Node-20 deprecation warnings. `configure-pages@v5`,
+  `upload-pages-artifact`, `deploy-pages@v4` still warn until GitHub ships Node-24
+  releases — harmless; don't bump blindly to non-existent versions.
+- **`workflow_dispatch`** is in `on:` → gives a manual **Run workflow** button in
+  the Actions tab. Use it (or "Re-run failed jobs") to redeploy WITHOUT pushing —
+  no more empty "trigger deploy" commits.
 - **`.gitignore`**: `node_modules`, `app/build`, `app/.svelte-kit`, `.wrangler/`,
   `__pycache__/`, and **any third-party source assets** (Train Tracks git-ignores
   `sources/` — the Krazydad reference PDFs; do NOT republish them).
@@ -298,6 +311,13 @@ weekday+percentile.
 - [ ] Gitignore `.wrangler/` and third-party assets; scrub if committed.
 - [ ] Don't curl the workers.dev domain (guard); use wrangler/app.
 - [ ] Pages: `actions/configure-pages@v5 { enablement: true }` in the workflow.
+- [ ] Pages: `concurrency.cancel-in-progress: false` (else rapid pushes →
+      "Deployment failed, try again later"); re-run the failed job to recover.
+- [ ] CI actions: `checkout@v5` + `setup-node@v5` (Node 24) to cut deprecation
+      warnings; the Pages actions warn until GitHub updates them (harmless).
+- [ ] Redeploy without a commit via `workflow_dispatch` (Run workflow) or Re-run.
+- [ ] UI copy is ENGLISH (player-facing) — dates via `en-US` locale.
+- [ ] Localize dates with an explicit locale, not the browser default.
 - [ ] Assistant commits locally; **user pushes**; no tokens in chat.
 - [ ] Preserve already-released days when regenerating.
 
