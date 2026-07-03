@@ -8,6 +8,7 @@
 
   let { children } = $props();
   let theme = $state('light');
+  let showHelp = $state(false);
 
   onMount(() => {
     const saved = localStorage.getItem('theme');
@@ -40,6 +41,7 @@
 </main>
 
 <footer>
+  <button class="foot-help" onclick={() => (showHelp = true)}>❔ How to play</button>
   <span>Built from
     <a
       class="foot-brand"
@@ -53,6 +55,22 @@
     <a href="https://imangulova.github.io/" target="_blank" rel="noopener">GH</a>
   </span>
 </footer>
+
+{#if showHelp}
+  <div
+    class="help-overlay"
+    role="button"
+    tabindex="-1"
+    onclick={() => (showHelp = false)}
+    onkeydown={(e) => e.key === 'Escape' && (showHelp = false)}
+  >
+    <div class="help-card" role="dialog" aria-modal="true" aria-label="How to play" onclick={(e) => e.stopPropagation()}>
+      <h2>How to play</h2>
+      <p>{GAME.howToPlay}</p>
+      <button class="help-close" onclick={() => (showHelp = false)}>Got it</button>
+    </div>
+  </div>
+{/if}
 
 <style>
   :global(:root) {
@@ -173,5 +191,65 @@
   }
   .foot-links .dot {
     opacity: 0.6;
+  }
+  .foot-help {
+    border: var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font: inherit;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .foot-help:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+  .help-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+  .help-card {
+    background: var(--surface);
+    color: var(--ink);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    max-width: 380px;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+  .help-card h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+  }
+  .help-card p {
+    margin: 0 0 16px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .help-close {
+    border: var(--border);
+    background: var(--accent);
+    color: #111;
+    box-shadow: var(--shadow);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .help-close:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
   }
 </style>

@@ -24,6 +24,11 @@ export const GAME = {
   title: 'Daily Train Tracks',
   tagline: 'Draw one rail line from entrance to exit. A fresh puzzle every day.',
 
+  // One or two sentences shown by the footer "How to play" button.
+  howToPlay:
+    'Connect the two edge entrances with a single continuous railway track. ' +
+    'The numbers show how many track pieces go in each row and column, and the track never forks or crosses itself.',
+
   // Day 0 = 3 July 2026 (monthIndex 6). Day N = this + N calendar days.
   anchorDate: [2026, 6, 3],
 
