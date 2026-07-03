@@ -25,6 +25,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # Enables GitHub Pages for the repo (source = GitHub Actions) if it isn't
+      # already, so the deploy job's actions/deploy-pages step has a site to
+      # publish to. Removes the chicken-and-egg with the manual Settings toggle.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Install
         run: npm install
       - name: Build
