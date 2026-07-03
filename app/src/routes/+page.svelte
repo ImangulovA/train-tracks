@@ -185,8 +185,7 @@
           <h2>Все игроки</h2>
           <div class="grow">
             <div><span class="num">{dayAgg().started}</span><span class="lbl">начали</span></div>
-            <div><span class="num">{pct(dayAgg().finishRate)}%</span><span class="lbl">дошли до конца</span></div>
-            <div><span class="num">{fmtTime(dayAgg().avgMs)}</span><span class="lbl">среднее время</span></div>
+            <div><span class="num">{dayAgg().finished}</span><span class="lbl">закончили</span></div>
           </div>
         </div>
       {/if}

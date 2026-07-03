@@ -46,7 +46,7 @@
           <span class="idx">#{d.idx}</span>
           <span class="time">{fmtTime(d.ms)}</span>
           {#if global?.[d.idx]}
-            <span class="g">все: {pct(global[d.idx].finishRate)}% дошли · {fmtTime(global[d.idx].avgMs)}</span>
+            <span class="g">все: {global[d.idx].started} начали · {global[d.idx].finished} закончили</span>
           {/if}
         </a>
       </li>
