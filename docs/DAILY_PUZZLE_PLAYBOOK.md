@@ -193,6 +193,11 @@ Performance reference: Train Tracks 42 days (4×4..8×8) generate + verify in <1
   snapshots) and **Reset**.
 - **Resume**: hydrate from `saved` on mount; init "given/locked" cells so they're
   always present and non-editable.
+- **"View solved puzzle"**: give the component `readonly` + `reveal` props
+  (reveal = start from the full solution, readonly = ignore input & hide the
+  tools). The end screen has a "🔍 View puzzle" button that mounts the component
+  with those props so players can review the completed board (also works when
+  revisiting a finished day — it loads straight to the end screen).
 
 Also trim the platform end-screen / stats page to your game (remove Lights-Out
 "moves"; we later removed the max-streak stat on request).

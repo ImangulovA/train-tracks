@@ -21,7 +21,16 @@
   // ===========================================================================
   import { onMount } from 'svelte';
 
-  let { puzzle, dayIdx, saved = null, onstart, onprogress, onfinish } = $props();
+  let {
+    puzzle,
+    dayIdx,
+    saved = null,
+    onstart,
+    onprogress,
+    onfinish,
+    readonly = false, // no input; just display the board
+    reveal = false // start from the full solution (for "view solved puzzle")
+  } = $props();
 
   const R = puzzle.rows;
   const C = puzzle.cols;
@@ -70,11 +79,11 @@
   }
 
   // --- mutable state --------------------------------------------------------
-  let edges = new Set(saved?.edges ?? []); // ON interior edges
+  let edges = new Set(reveal ? solutionEdges : (saved?.edges ?? [])); // ON interior edges
   for (const e of lockedEdges) edges.add(e); // givens always present
-  let blocked = new Set(saved?.blocked ?? []); // "r,c" cells marked empty
+  let blocked = new Set(reveal ? [] : (saved?.blocked ?? [])); // "r,c" cells marked empty
   let mode = $state('rail'); // 'rail' | 'empty' (mobile toggle / current tool)
-  let done = $state(saved?.done ?? false);
+  let done = $state(reveal ? true : (saved?.done ?? false));
   let rowCount = $state(new Array(R).fill(0));
   let colCount = $state(new Array(C).fill(0));
   let canUndo = $state(false);
@@ -236,7 +245,7 @@
   }
 
   function onDown(evt) {
-    if (done) return;
+    if (done || readonly) return;
     const cellPos = cellAt(evt);
     if (!cellPos) return;
     evt.preventDefault();
@@ -463,14 +472,19 @@
 </script>
 
 <div class="tt" bind:this={wrap}>
-  <p class="hint">
-    Connect the two entrances with a single rail line. The numbers count how many
-    track pieces are in each column and row. The line can't fork or cross itself.
-  </p>
+  {#if readonly}
+    <p class="hint">The completed track for this day.</p>
+  {:else}
+    <p class="hint">
+      Connect the two entrances with a single rail line. The numbers count how many
+      track pieces are in each column and row. The line can't fork or cross itself.
+    </p>
+  {/if}
 
   <canvas
     bind:this={canvas}
     class="board"
+    class:readonly
     role="img"
     aria-label={`Train Tracks ${R}×${C}`}
     onpointerdown={onDown}
@@ -480,19 +494,21 @@
     oncontextmenu={(e) => e.preventDefault()}
   ></canvas>
 
-  <div class="tools">
-    <div class="seg" role="group" aria-label="Tool">
-      <button class:active={mode === 'rail'} onclick={() => (mode = 'rail')}>🚆 Rails</button>
-      <button class:active={mode === 'empty'} onclick={() => (mode = 'empty')}>✖ Empty</button>
+  {#if !readonly}
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Tool">
+        <button class:active={mode === 'rail'} onclick={() => (mode = 'rail')}>🚆 Rails</button>
+        <button class:active={mode === 'empty'} onclick={() => (mode = 'empty')}>✖ Empty</button>
+      </div>
+      <button class="ghost" onclick={undo} disabled={!canUndo}>↶ Undo</button>
+      <button class="ghost" onclick={clearAll}>Reset</button>
     </div>
-    <button class="ghost" onclick={undo} disabled={!canUndo}>↶ Undo</button>
-    <button class="ghost" onclick={clearAll}>Reset</button>
-  </div>
 
-  <p class="legend">
-    Desktop: <b>left-drag</b> to lay rails, <b>right-click</b> to mark empty.
-    Mobile: <b>drag</b> in the selected mode, <b>long-press</b> to mark empty.
-  </p>
+    <p class="legend">
+      Desktop: <b>left-drag</b> to lay rails, <b>right-click</b> to mark empty.
+      Mobile: <b>drag</b> in the selected mode, <b>long-press</b> to mark empty.
+    </p>
+  {/if}
 </div>
 
 <style>
@@ -517,6 +533,9 @@
     -webkit-user-select: none;
     max-width: 100%;
     cursor: crosshair;
+  }
+  .board.readonly {
+    cursor: default;
   }
   .tools {
     display: flex;

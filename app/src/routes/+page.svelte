@@ -20,6 +20,7 @@
   let isFuture = $state(false);
   let agg = $state(null); // global cross-player numbers for this day
   let untilMidnight = $state('');
+  let viewingSolved = $state(false); // "view the solved puzzle" from the end screen
 
   let timer = null;
   let tick = null;
@@ -194,7 +195,16 @@
     </div>
   {/if}
 
-  {#if view === 'end'}
+  {#if view === 'end' && viewingSolved}
+    <div class="card">
+      <GAME.component {puzzle} {dayIdx} readonly reveal />
+      <div class="actions">
+        <button class="ghost" onclick={() => (viewingSolved = false)}>← Back to results</button>
+      </div>
+    </div>
+  {/if}
+
+  {#if view === 'end' && !viewingSolved}
     <div class="card end">
       <h1>{record.result?.won ? '🚂 Solved!' : 'Game over'}</h1>
       <div class="bigstats">
@@ -226,6 +236,7 @@
 
       <div class="actions">
         <button class="primary" onclick={share}>Share</button>
+        <button class="ghost" onclick={() => (viewingSolved = true)}>🔍 View puzzle</button>
         <a class="ghost" href="{base}/stats">All stats →</a>
       </div>
       {#if shared}<p class="copied">{shared}</p>{/if}
