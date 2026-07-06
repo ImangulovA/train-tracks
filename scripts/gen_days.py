@@ -550,15 +550,17 @@ import datetime
 ANCHOR = datetime.date(2026, 7, 3)  # [2026, monthIndex 6, 3]
 
 # Grid size per difficulty tier (calibrated against Krazydad tiers).
-TIER_SIZE = {"beginner": 4, "easy": 5, "medium": 6, "hard": 7, "expert": 8}
+TIER_SIZE = {"beginner": 4, "easy": 5, "medium": 6, "hard": 7, "expert": 8, "master": 9}
 SIZE_TIER = {v: k for k, v in TIER_SIZE.items()}
 
-# Established weekly ramp by REAL weekday (Mon=0 .. Sun=6):
-#   Mon 4x4 · Tue 5x5 · Wed 6x6 · Thu 7x7 · Fri 8x8 · Sat 7x7 · Sun 7x7
-SIZE_BY_WEEKDAY = {0: 4, 1: 5, 2: 6, 3: 7, 4: 8, 5: 7, 6: 7}
+# Weekly ramp by REAL weekday (Mon=0 .. Sun=6):
+#   Sat–Mon 7x7 · Tue–Thu 8x8 · Fri 9x9
+SIZE_BY_WEEKDAY = {0: 7, 1: 8, 2: 8, 3: 8, 4: 9, 5: 7, 6: 7}
 
 # Days never regenerated (already released / kept as-is). See --preserve note.
-PRESERVE = {-1, 0}
+# Covers past, already-released days (through Sun 2026-07-05). Today (day 3 =
+# Mon 2026-07-06) onward adopts the new, larger schedule.
+PRESERVE = {-1, 0, 1, 2}
 
 
 def size_for(idx):
